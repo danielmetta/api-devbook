@@ -1,0 +1,349 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "DevBook API",
+        "description": "API do projeto DevBook - Uma rede social para desenvolvedores",
+        "version": "1.0",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "localhost:5000",
+    "basePath": "/api/v1",
+    "schemes": [
+        "http"
+    ],
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "autenticacao"
+                ],
+                "summary": "Autenticar usuário",
+                "description": "Autentica um usuário na API e retorna um token JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "credentials",
+                        "description": "Credenciais do usuário",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/DadosAutenticacao"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios": {
+            "post": {
+                "tags": [
+                    "usuarios"
+                ],
+                "summary": "Criar um novo usuário",
+                "description": "Cria um novo usuário no sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "usuario",
+                        "description": "Dados do usuário",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/Usuario"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "usuarios"
+                ],
+                "summary": "Buscar usuários",
+                "description": "Busca usuários por nome ou nick",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "type": "string",
+                        "description": "Nome ou nick do usuário"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Usuario"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/publicacoes": {
+            "post": {
+                "tags": [
+                    "publicacoes"
+                ],
+                "summary": "Criar uma nova publicação",
+                "description": "Cria uma nova publicação para o usuário autenticado",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "publicacao",
+                        "description": "Dados da publicação",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Publicacao"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/Publicacao"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "publicacoes"
+                ],
+                "summary": "Buscar publicações",
+                "description": "Retorna as publicações que aparecem no feed do usuário autenticado",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Publicacao"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Usuario": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "uint64"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "nick": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "senha": {
+                    "type": "string"
+                },
+                "criadoEm": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "Publicacao": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "uint64"
+                },
+                "titulo": {
+                    "type": "string"
+                },
+                "conteudo": {
+                    "type": "string"
+                },
+                "autorId": {
+                    "type": "integer",
+                    "format": "uint64"
+                },
+                "curtidas": {
+                    "type": "integer"
+                },
+                "criadaEm": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "DadosAutenticacao": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "Erro": {
+            "type": "object",
+            "properties": {
+                "erro": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
